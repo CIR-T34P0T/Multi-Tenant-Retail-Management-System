@@ -37,7 +37,7 @@ The owner enters the person's email and role → the person creates an account (
 | Check | Where | Result |
 |---|---|---|
 | Browser tests — complete journeys (Playwright) | My workspace: real Supabase Auth + data API + PostgreSQL, built from Supabase's official releases | **16 / 16 passed**, twice in a row; 0 server errors in the log |
-| Browser tests (Playwright) | **GitHub: official full Supabase stack** (run 42200515907, log checked) | **16 / 16 passed** |
+| Browser tests (Playwright) | **GitHub: official full Supabase stack** (runs 42200515907 and 42202080430, logs checked) | **16 / 16 passed** |
 | Database tests (pgTAP) | Workspace (PostgreSQL 16, two setups) and GitHub (Supabase PostgreSQL 17) | **135 / 135 passed** |
 | Unit tests (Vitest) | Workspace and GitHub | **70 / 70 passed** |
 | Formatting, lint, type-check (against generated database types), build | Workspace and GitHub | Pass |
