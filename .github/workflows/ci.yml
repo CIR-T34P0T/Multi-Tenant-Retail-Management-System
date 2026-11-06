@@ -62,7 +62,7 @@ jobs:
       - name: Database types are up to date with the migrations
         run: |
           supabase gen types typescript > /tmp/generated.ts
-          npx prettier --parser typescript /tmp/generated.ts > /tmp/generated.fmt.ts
+          npx prettier --config .prettierrc.json --parser typescript /tmp/generated.ts > /tmp/generated.fmt.ts
           if ! tail -n +6 src/types/database.ts | diff -u - /tmp/generated.fmt.ts; then
             echo "::error::src/types/database.ts is out of date. Run 'npm run db:types' and commit."
             exit 1
