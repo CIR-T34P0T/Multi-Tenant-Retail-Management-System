@@ -278,3 +278,25 @@ export function checkModuleChange(
   }
   return { ok: true };
 }
+
+/**
+ * Adds every module the selection depends on, and orders the result so each
+ * module comes after the ones it requires (safe order for switching them on).
+ * Example: ["credit"] → ["sales", "customers", "credit"].
+ */
+export function withRequirementsInOrder(selected: Iterable<ModuleCode>): OptionalModuleCode[] {
+  const ordered: OptionalModuleCode[] = [];
+  const seen = new Set<ModuleCode>();
+  const visit = (code: ModuleCode) => {
+    if (seen.has(code)) return;
+    seen.add(code);
+    getModule(code).requires.forEach(visit);
+    if (!isCoreModule(code)) ordered.push(code as OptionalModuleCode);
+  };
+  for (const code of selected) visit(code);
+  return ordered;
+}
+
+export function isOptionalModuleCode(value: string): value is OptionalModuleCode {
+  return (OPTIONAL_MODULES as readonly string[]).includes(value);
+}

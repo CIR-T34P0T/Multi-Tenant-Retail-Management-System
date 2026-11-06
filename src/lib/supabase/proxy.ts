@@ -3,15 +3,15 @@ import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv, isSupabaseConfigured } from "@/lib/env";
 
 /**
- * Refreshes the Supabase auth session on every matched request and writes
- * updated cookies to the response. Route protection (redirect to sign-in)
- * is added in Stage 4.
+ * Refreshes the Supabase session on every matched request, writes updated
+ * cookies to the response, and reports whether someone is signed in.
  */
-export async function updateSession(request: NextRequest) {
+export async function updateSession(
+  request: NextRequest,
+): Promise<{ response: NextResponse; userId: string | null; configured: boolean }> {
   let response = NextResponse.next({ request });
 
-  // Allow the app shell to run before Supabase is configured (Stage 2).
-  if (!isSupabaseConfigured()) return response;
+  if (!isSupabaseConfigured()) return { response, userId: null, configured: false };
 
   const env = getPublicEnv();
   const supabase = createServerClient(
@@ -36,7 +36,18 @@ export async function updateSession(request: NextRequest) {
 
   // Do not run other code between creating the client and this call:
   // getClaims() validates the JWT and triggers a refresh when needed.
-  await supabase.auth.getClaims();
+  const { data } = await supabase.auth.getClaims();
+  const sub = data?.claims?.sub;
+  return { response, userId: typeof sub === "string" ? sub : null, configured: true };
+}
 
-  return response;
+/** Redirect that keeps any refreshed session cookies. */
+export function redirectWithCookies(request: NextRequest, from: NextResponse, pathname: string) {
+  const url = request.nextUrl.clone();
+  const [path, query] = pathname.split("?");
+  url.pathname = path;
+  url.search = query ? `?${query}` : "";
+  const redirect = NextResponse.redirect(url);
+  from.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+  return redirect;
 }

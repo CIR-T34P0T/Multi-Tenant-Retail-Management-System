@@ -15,6 +15,22 @@ as $$
 declare
   v_id uuid := gen_random_uuid();
 begin
+  insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at)
+  values (v_id, p_email, jsonb_build_object('full_name', split_part(p_email, '@', 1)), now());
+  return v_id;
+end;
+$$;
+
+-- A sign-up whose email address has not been confirmed yet.
+create or replace function tests.create_unconfirmed_user(p_email text)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid := gen_random_uuid();
+begin
   insert into auth.users (id, email, raw_user_meta_data)
   values (v_id, p_email, jsonb_build_object('full_name', split_part(p_email, '@', 1)));
   return v_id;

@@ -87,3 +87,19 @@ describe("enabling and disabling modules", () => {
     expect(checkModuleChange("suppliers", false, PILOT_ENABLED_MODULES).ok).toBe(true);
   });
 });
+
+describe("withRequirementsInOrder", () => {
+  it("adds missing requirements before the module that needs them", async () => {
+    const { withRequirementsInOrder } = await import("./registry");
+    const order = withRequirementsInOrder(["credit"]);
+    expect(order).toEqual(expect.arrayContaining(["sales", "customers", "credit"]));
+    expect(order.indexOf("credit")).toBeGreaterThan(order.indexOf("sales"));
+    expect(order.indexOf("credit")).toBeGreaterThan(order.indexOf("customers"));
+  });
+  it("never includes core modules and has no duplicates", async () => {
+    const { withRequirementsInOrder } = await import("./registry");
+    const order = withRequirementsInOrder(["credit", "sales", "purchases", "inventory"]);
+    expect(order).not.toContain("inventory");
+    expect(new Set(order).size).toBe(order.length);
+  });
+});

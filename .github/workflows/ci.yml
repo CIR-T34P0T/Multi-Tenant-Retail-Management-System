@@ -41,3 +41,54 @@ jobs:
         run: supabase db start
       - name: Database tests (tenant isolation, permissions, modules, audit)
         run: supabase test db
+
+  e2e:
+    # Full journey tests: real browser + real Supabase (Auth, API, database, mail catcher).
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Install
+        run: npm ci
+      - name: Start Supabase (database, auth, API gateway, mail catcher)
+        run: supabase start -x studio,imgproxy,vector,logflare,realtime,storage-api,edge-runtime,postgres-meta,supavisor
+      - name: Generated database types (printed for review)
+        run: |
+          supabase gen types typescript --local > /tmp/database.ts
+          echo "----- BEGIN GENERATED TYPES -----"; cat /tmp/database.ts; echo "----- END GENERATED TYPES -----"
+      - name: Configure app for the local stack
+        run: |
+          supabase status -o env > /tmp/sb.env
+          set -a; source /tmp/sb.env; set +a
+          {
+            echo "NEXT_PUBLIC_APP_URL=http://localhost:3000"
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+            echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_ROLE_KEY"
+          } > .env.local
+          echo "MAILPIT_URL=${MAILPIT_URL:-${INBUCKET_URL:-http://127.0.0.1:54324}}" >> "$GITHUB_ENV"
+      - name: Build and start the app
+        run: |
+          npm run build
+          nohup npm run start > /tmp/app.log 2>&1 &
+          npx wait-on -t 60000 http://localhost:3000/sign-in
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: End-to-end tests
+        run: npx playwright test
+      - name: App log on failure
+        if: failure()
+        run: tail -200 /tmp/app.log
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { getPublicEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
@@ -13,8 +14,13 @@ import type { Database } from "@/types/database";
  * Reading cookies makes the caller dynamic, so render it inside <Suspense>.
  */
 export async function createClient() {
-  const env = getPublicEnv();
+  // Read cookies first: this marks the page as personal (rendered per request),
+  // so Next.js never tries to pre-build it.
   const cookieStore = await cookies();
+  // Business data must always be fresh and the auth library checks the clock,
+  // so database access only happens while serving a real request.
+  await connection();
+  const env = getPublicEnv();
 
   return createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
