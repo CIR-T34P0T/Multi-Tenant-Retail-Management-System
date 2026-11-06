@@ -30,6 +30,11 @@ You need: a Linux VPS (proposed start: 2 vCPU, 4 GB RAM, 80 GB SSD), two DNS nam
 2. **Replace every example secret in `.env`** before the first start: `POSTGRES_PASSWORD`, `JWT_SECRET`, `ANON_KEY`, `SERVICE_ROLE_KEY` (generated from your `JWT_SECRET` — follow Supabase's self-hosting guide), `DASHBOARD_USERNAME`, `DASHBOARD_PASSWORD`, and any other key marked as a secret.
 3. Set the public URLs: `API_EXTERNAL_URL=https://api.yourdomain.com`, `SUPABASE_PUBLIC_URL=https://api.yourdomain.com`, `SITE_URL=https://app.yourdomain.com`.
 4. Configure SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_ADMIN_EMAIL`, `SMTP_SENDER_NAME`).
+   Sign-in settings to check in the same `.env`:
+   - **Email confirmation on** (`ENABLE_EMAIL_AUTOCONFIRM=false`): people must confirm their email before signing in. Invitations rely on confirmed emails.
+   - `ADDITIONAL_REDIRECT_URLS=https://app.yourdomain.com/**` so password-reset and confirmation links may return to the app.
+   - Minimum password length 10 (`GOTRUE_PASSWORD_MIN_LENGTH=10` on the auth service), matching the app's rule.
+     The default Supabase email templates work with the app's `/auth/confirm` page; no template changes are needed.
 5. Copy `deploy/supabase/docker-compose.override.yml` from this repository into `~/supabase/`. It keeps the database and gateway ports on `127.0.0.1` (Docker ports otherwise bypass the firewall). Check the service names with `docker compose config --services`.
 6. `chmod 600 .env && docker compose up -d`, then `docker compose ps` — all services should be healthy.
 7. Studio (database admin) is **not** public. Open it from your computer with an SSH tunnel:

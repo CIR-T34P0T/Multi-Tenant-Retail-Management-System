@@ -54,7 +54,11 @@ export function StaffTable({
                   <span className="text-muted-foreground text-sm font-normal"> (you)</span>
                 ) : null}
               </p>
-              <p className="text-muted-foreground truncate text-sm">{m.email}</p>
+              {m.full_name ? (
+                <p className="text-muted-foreground truncate text-sm">{m.email}</p>
+              ) : m.status === "invited" ? (
+                <p className="text-muted-foreground text-sm">Waiting for them to accept</p>
+              ) : null}
             </div>
             <Badge variant={m.status === "active" ? "secondary" : "outline"} className="w-fit">
               {STATUS_LABEL[m.status]}

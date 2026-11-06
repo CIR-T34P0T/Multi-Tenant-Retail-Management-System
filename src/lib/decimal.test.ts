@@ -78,3 +78,12 @@ describe("unit conversion", () => {
     expect(formatQuantity("1.25", "ctn")).toBe("1.25 ctn");
   });
 });
+
+describe("asNumericInput", () => {
+  it("passes exact decimal strings through and rejects anything else", async () => {
+    const { asNumericInput } = await import("./supabase/decimal-column");
+    expect(asNumericInput("12500.50")).toBe("12500.50");
+    expect(() => asNumericInput("1e3")).toThrow(RangeError);
+    expect(() => asNumericInput("12,5")).toThrow(RangeError);
+  });
+});

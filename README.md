@@ -2,7 +2,7 @@
 
 A multi-tenant retail management web app (installable PWA) for businesses with several sections such as Groceries, Frozen Food, Beverages and Islamic Wear. Inventory is the core; sales, purchases, suppliers, customers, credit, expenses and accounting are optional modules.
 
-**Status:** Stage 3 of 15 — database foundation and multi-tenant security done. No sign-in screens yet (Stage 4). See [`docs/stage-reports`](docs/stage-reports).
+**Status:** Stage 4 of 15 — sign-up, sign-in, business accounts, settings and staff done. Products and stock come next (Stages 5–7). See [`docs/stage-reports`](docs/stage-reports).
 
 ## Stack
 

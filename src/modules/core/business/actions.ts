@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { dbErrorMessage, type ActionResult } from "@/lib/action-result";
+import { asNumericInput } from "@/lib/supabase/decimal-column";
 import { createClient } from "@/lib/supabase/server";
+import type { Database } from "@/types/database";
 import {
   getModule,
   isOptionalModuleCode,
@@ -150,7 +152,7 @@ export async function updatePreferences(
   if (!parsed.success) return { ok: false, fieldErrors: fieldErrors(parsed.error) };
   const v = parsed.data;
 
-  const update: Record<string, unknown> = {
+  const update: Database["public"]["Tables"]["business_settings"]["Update"] = {
     allow_negative_stock: v.allowNegativeStock,
     low_stock_alerts_enabled: v.lowStockAlertsEnabled,
     receipt_header: v.receiptHeader,
@@ -158,12 +160,10 @@ export async function updatePreferences(
   };
   // Sales settings only change while Sales is on (their fields are hidden otherwise).
   if (ctx.moduleActive("sales")) {
-    Object.assign(update, {
-      require_customer_on_sale: v.requireCustomerOnSale,
-      returns_enabled: v.returnsEnabled,
-      max_discount_percent: v.maxDiscountPercent,
-      cash_rounding_increment: v.cashRoundingIncrement,
-    });
+    update.require_customer_on_sale = v.requireCustomerOnSale;
+    update.returns_enabled = v.returnsEnabled;
+    update.max_discount_percent = asNumericInput(v.maxDiscountPercent);
+    update.cash_rounding_increment = asNumericInput(v.cashRoundingIncrement);
   }
 
   const supabase = await createClient();

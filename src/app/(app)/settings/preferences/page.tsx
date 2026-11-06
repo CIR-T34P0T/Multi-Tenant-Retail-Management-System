@@ -14,21 +14,15 @@ export default async function PreferencesPage() {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("business_settings")
+    // numeric columns are read as text so values stay exact (lib/supabase/decimal-column.ts)
     .select(
-      "allow_negative_stock, low_stock_alerts_enabled, require_customer_on_sale, returns_enabled, max_discount_percent, cash_rounding_increment, receipt_header, receipt_footer",
+      "allow_negative_stock, low_stock_alerts_enabled, require_customer_on_sale, returns_enabled, max_discount_percent::text, cash_rounding_increment::text, receipt_header, receipt_footer",
     )
     .eq("business_id", ctx.business.businessId)
     .single();
   if (error) throw new Error(error.message);
   const readOnly = !ctx.can("core.settings.manage");
-  const prefs = {
-    ...(data as Preferences),
-    // numeric columns arrive as numbers; keep them as exact strings for the form
-    max_discount_percent: String((data as { max_discount_percent: unknown }).max_discount_percent),
-    cash_rounding_increment: String(
-      (data as { cash_rounding_increment: unknown }).cash_rounding_increment,
-    ),
-  };
+  const prefs: Preferences = data;
   return (
     <div className="grid gap-4">
       {readOnly ? (

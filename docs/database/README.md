@@ -11,6 +11,9 @@ How the database is organised, what each migration does, and the rules every fut
 | `20261106100200_reference_data.sql` | The 13 modules, 48 permissions and 3 role templates (Owner, Manager, Attendant). |
 | `20261106100300_security_rls.sql` | Security check functions (`app.is_member`, `app.is_owner`, `app.module_enabled`, `app.has_permission`); exact table privileges; **Row-Level Security policies on every table**. |
 | `20261106100400_business_functions_and_guards.sql` | `create_business()`, `set_module_enabled()`, `current_user_permissions()`; guard rules against privilege escalation; "always keep one owner" rule. |
+| `20261106120000_members_and_invitations.sql` | Stage 4. Staff invitations (`invite_member`, `my_pending_invitations`, `accept_invitation`, `decline_invitation`, `cancel_invitation`), staff list with emails (`business_member_directory`), and business protections: currency fixed after creation; status controlled by the platform. |
+| `20261106120100_fix_permission_delegation.sql` | Stage 4 fix. Separates "can you **use** a permission now" (`app.has_permission`, needs the module on) from "is it yours to **hand out**" (`app.role_grants`, module ignored). Before this, nobody could invite an attendant while Sales was off. |
+| `20261106120200_fix_owner_check_visibility.sql` | Stage 4 fix. The "keep one active owner" check runs when changes are saved, as the person saving; a new attendant could not see the owner, so accepting an invitation failed. The check now runs with full visibility. |
 
 ## Tables
 
@@ -39,6 +42,15 @@ How the database is organised, what each migration does, and the rules every fut
 | `role_permissions` | Which permissions each role has | `core.role.manage`, and only permissions you hold yourself |
 | `business_members` | Who belongs to the business, with which role and status | `core.member.manage`, with guard rules below |
 | `audit_logs` | Who changed what, before and after | Nobody: written only by triggers. Read with `core.audit.view` |
+
+## How staff join a business
+
+1. An owner (or anyone with *Invite, suspend and change roles of staff*) enters the person's email and a role in **Settings → Staff**. This saves an invitation; no email is sent by the app.
+2. The person creates an account (or signs in) with that **same, confirmed** email address.
+3. They see the invitation on the *Get started* screen and accept or decline it.
+4. The inviter can withdraw a pending invitation. Staff are suspended rather than deleted.
+
+Rules: you can only invite with a role whose permissions you hold yourself; only owners can invite owners; an unconfirmed email cannot see or accept invitations.
 
 ## How security works (plain language)
 

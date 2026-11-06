@@ -59,10 +59,14 @@ jobs:
         run: npm ci
       - name: Start Supabase (database, auth, API gateway, mail catcher)
         run: supabase start -x studio,imgproxy,vector,logflare,realtime,storage-api,edge-runtime,postgres-meta,supavisor
-      - name: Generated database types (printed for review)
+      - name: Database types are up to date with the migrations
         run: |
-          supabase gen types typescript --local > /tmp/database.ts
-          echo "----- BEGIN GENERATED TYPES -----"; cat /tmp/database.ts; echo "----- END GENERATED TYPES -----"
+          supabase gen types typescript > /tmp/generated.ts
+          npx prettier --parser typescript /tmp/generated.ts > /tmp/generated.fmt.ts
+          if ! tail -n +6 src/types/database.ts | diff -u - /tmp/generated.fmt.ts; then
+            echo "::error::src/types/database.ts is out of date. Run 'npm run db:types' and commit."
+            exit 1
+          fi
       - name: Configure app for the local stack
         run: |
           supabase status -o env > /tmp/sb.env
