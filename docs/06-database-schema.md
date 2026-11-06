@@ -1,5 +1,7 @@
 # 06 — Detailed Database Schema
 
+> **As built:** the implemented schema and its rules are documented in [`database/README.md`](database/README.md) and the migrations in `supabase/migrations/`. Where this design differs from what was built (e.g. `business_settings` columns, per-business role copies, no `citext`), the migrations are authoritative.
+
 Status: Draft v0.1 · 6 November 2026 · Target: PostgreSQL (Supabase)
 
 This is a **design specification**, not a migration. DDL is written to be precise and reviewable; it will be split into ordered migrations per module during implementation. Tables marked *(TBC)* depend on open questions and should not be created until answered.

@@ -2,7 +2,7 @@
 
 A multi-tenant retail management web app (installable PWA) for businesses with several sections such as Groceries, Frozen Food, Beverages and Islamic Wear. Inventory is the core; sales, purchases, suppliers, customers, credit, expenses and accounting are optional modules.
 
-**Status:** Stage 2 of 15 — project foundation. No business features yet. See [`docs/stage-reports`](docs/stage-reports).
+**Status:** Stage 3 of 15 — database foundation and multi-tenant security done. No sign-in screens yet (Stage 4). See [`docs/stage-reports`](docs/stage-reports).
 
 ## Stack
 
@@ -25,7 +25,10 @@ npm run db:start       # starts local Supabase in Docker; prints URL and keys
 # copy "API URL", "anon key" and "service_role key" into .env.local
 npm run db:reset       # re-applies migrations and seed data
 npm run db:types       # regenerates src/types/database.ts
+npm run db:test        # database security tests (pgTAP)
 ```
+
+No Docker? `npm run db:test:local` runs the same database tests on a plain local PostgreSQL 15+ with pgTAP installed. Database guide: [`docs/database/README.md`](docs/database/README.md).
 
 ## Scripts
 
