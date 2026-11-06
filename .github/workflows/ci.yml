@@ -27,4 +27,17 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
-      # Stage 3 adds: start local Supabase, apply migrations, run database tests.
+
+  database:
+    # Runs migrations and the pgTAP security tests on the real Supabase stack.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase database (applies all migrations)
+        run: supabase db start
+      - name: Database tests (tenant isolation, permissions, modules, audit)
+        run: supabase test db

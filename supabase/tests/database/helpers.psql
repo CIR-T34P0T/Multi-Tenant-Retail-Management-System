@@ -1,0 +1,72 @@
+-- Shared helpers for database tests. Included by each *.test.sql file with \ir.
+-- Everything here is created inside the test's transaction and rolled back.
+
+create extension if not exists pgtap with schema extensions;
+create schema if not exists tests;
+grant usage on schema tests to anon, authenticated;
+
+-- Creates a sign-up (auth.users row); the profile is created by our trigger.
+create or replace function tests.create_user(p_email text)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_id uuid := gen_random_uuid();
+begin
+  insert into auth.users (id, email, raw_user_meta_data)
+  values (v_id, p_email, jsonb_build_object('full_name', split_part(p_email, '@', 1)));
+  return v_id;
+end;
+$$;
+
+create or replace function tests.user_id(p_email text)
+returns uuid language sql stable security definer set search_path = ''
+as $$ select id from auth.users where email = p_email $$;
+
+-- Act as a signed-in user, exactly like a request through the Supabase API.
+create or replace function tests.authenticate_as(p_email text)
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims',
+    json_build_object('sub', tests.user_id(p_email), 'role', 'authenticated')::text, true);
+  perform set_config('role', 'authenticated', true);
+end;
+$$;
+
+-- Act as a signed-out visitor.
+create or replace function tests.authenticate_as_anon()
+returns void
+language plpgsql
+as $$
+begin
+  perform set_config('request.jwt.claims', json_build_object('role', 'anon')::text, true);
+  perform set_config('role', 'anon', true);
+end;
+$$;
+
+-- Look-ups that bypass RLS (used to obtain IDs an attacker might guess).
+create or replace function tests.business_id(p_slug text)
+returns uuid language sql stable security definer set search_path = ''
+as $$ select id from public.businesses where slug = p_slug $$;
+
+create or replace function tests.role_id(p_slug text, p_key text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select r.id from public.roles r join public.businesses b on b.id = r.business_id
+  where b.slug = p_slug and r.key = p_key
+$$;
+
+create or replace function tests.member_id(p_slug text, p_email text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select m.id from public.business_members m
+  join public.businesses b on b.id = m.business_id
+  join auth.users u on u.id = m.user_id
+  where b.slug = p_slug and u.email = p_email
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
