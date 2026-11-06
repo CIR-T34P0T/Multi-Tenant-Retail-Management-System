@@ -272,6 +272,67 @@ export type Database = {
         };
         Relationships: [];
       };
+      categories: {
+        Row: {
+          archived_at: string | null;
+          archived_by: string | null;
+          business_id: string;
+          created_at: string;
+          created_by: string | null;
+          description: string;
+          id: string;
+          name: string;
+          section_id: string;
+          sort_order: number;
+          status: Database["public"]["Enums"]["record_status"];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          business_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          name: string;
+          section_id: string;
+          sort_order?: number;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          business_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          name?: string;
+          section_id?: string;
+          sort_order?: number;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "categories_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "categories_business_id_section_id_fkey";
+            columns: ["business_id", "section_id"];
+            isOneToOne: false;
+            referencedRelation: "sections";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
       modules: {
         Row: {
           code: string;
@@ -491,6 +552,57 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "role_templates";
             referencedColumns: ["key"];
+          },
+        ];
+      };
+      sections: {
+        Row: {
+          archived_at: string | null;
+          archived_by: string | null;
+          business_id: string;
+          created_at: string;
+          created_by: string | null;
+          description: string;
+          id: string;
+          name: string;
+          sort_order: number;
+          status: Database["public"]["Enums"]["record_status"];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          business_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          name: string;
+          sort_order?: number;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          business_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          name?: string;
+          sort_order?: number;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sections_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
           },
         ];
       };

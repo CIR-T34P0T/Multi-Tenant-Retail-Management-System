@@ -14,6 +14,7 @@ How the database is organised, what each migration does, and the rules every fut
 | `20261106120000_members_and_invitations.sql` | Stage 4. Staff invitations (`invite_member`, `my_pending_invitations`, `accept_invitation`, `decline_invitation`, `cancel_invitation`), staff list with emails (`business_member_directory`), and business protections: currency fixed after creation; status controlled by the platform. |
 | `20261106120100_fix_permission_delegation.sql` | Stage 4 fix. Separates "can you **use** a permission now" (`app.has_permission`, needs the module on) from "is it yours to **hand out**" (`app.role_grants`, module ignored). Before this, nobody could invite an attendant while Sales was off. |
 | `20261106120200_fix_owner_check_visibility.sql` | Stage 4 fix. The "keep one active owner" check runs when changes are saved, as the person saving; a new attendant could not see the owner, so accepting an invitation failed. The check now runs with full visibility. |
+| `20261106140000_sections_and_categories.sql` | Stage 5. `sections` (departments) and `categories` (groupings inside a section): unique names ignoring capitals, tidied spacing, archive/restore only (no deletion), no new categories in an archived section, composite keys so a category can only sit in a section of the same business, audit triggers, RLS. |
 
 ## Tables
 
@@ -42,6 +43,8 @@ How the database is organised, what each migration does, and the rules every fut
 | `role_permissions` | Which permissions each role has | `core.role.manage`, and only permissions you hold yourself |
 | `business_members` | Who belongs to the business, with which role and status | `core.member.manage`, with guard rules below |
 | `audit_logs` | Who changed what, before and after | Nobody: written only by triggers. Read with `core.audit.view` |
+| `sections` | Departments such as Groceries or Frozen Food | `catalog.section.manage`; read with `catalog.product.view`. Archived, never deleted |
+| `categories` | Groupings inside one section, such as Rice or Jalab | Same as sections. Cannot be added to or moved into an archived section |
 
 ## How staff join a business
 

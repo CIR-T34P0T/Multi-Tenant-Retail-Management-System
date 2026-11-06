@@ -6,9 +6,9 @@ select plan(17);
 
 select tables_are('public', array[
   'audit_logs', 'business_members', 'business_modules', 'business_settings', 'businesses',
-  'modules', 'permissions', 'profiles', 'role_permissions', 'role_template_permissions',
-  'role_templates', 'roles'
-], 'Stage 3 creates exactly the expected public tables');
+  'categories', 'modules', 'permissions', 'profiles', 'role_permissions',
+  'role_template_permissions', 'role_templates', 'roles', 'sections'
+], 'The database has exactly the expected public tables');
 
 select is_empty($$
   select c.relname from pg_class c join pg_namespace n on n.oid = c.relnamespace

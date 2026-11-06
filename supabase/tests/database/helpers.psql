@@ -86,3 +86,22 @@ as $$
 $$;
 
 grant execute on all functions in schema tests to anon, authenticated;
+
+-- Stage 5: sections and categories (look-ups bypass RLS, like an attacker guessing IDs).
+create or replace function tests.section_id(p_slug text, p_name text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select s.id from public.sections s join public.businesses b on b.id = s.business_id
+  where b.slug = p_slug and lower(s.name) = lower(p_name)
+$$;
+
+create or replace function tests.category_id(p_slug text, p_section text, p_name text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select c.id from public.categories c
+  join public.sections s on s.id = c.section_id
+  join public.businesses b on b.id = c.business_id
+  where b.slug = p_slug and lower(s.name) = lower(p_section) and lower(c.name) = lower(p_name)
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;
