@@ -36,7 +36,9 @@ Let each business define its own departments (sections) and the product grouping
 | Browser tests (Playwright) | My workspace: local Supabase stack (Auth, API, PostgreSQL) + production build | **22 / 22 passed** (16 existing + 6 new); 0 errors in the server log |
 | Unit tests (Vitest) | My workspace | **78 / 78 passed** (70 existing + 8 new) |
 | Formatting, lint, type-check, build | My workspace | Pass |
-| GitHub checks (incl. real Supabase PostgreSQL 17 and the database-types comparison) | GitHub | Recorded below after the push |
+| Database tests (pgTAP) | **GitHub: real Supabase PostgreSQL 17** (run 42230195683, log checked) | **168 / 168 passed** |
+| Browser tests (Playwright) | **GitHub: official full Supabase stack** (same run, log checked) | **22 / 22 passed** |
+| Formatting, lint, type-check, unit tests, build; database types match the real database exactly | GitHub (same run) | Pass |
 
 New database tests (`08_sections_and_categories`, 33): creation; tidy names; unique names ignoring capitals (and same category name allowed in different sections); creator recorded; archive records who and when; no categories into archived sections; restore keeps each category's status; moving categories (and refusing a move that would duplicate a name); no deletion; audit entries; **Business A cannot see, change, create in, or link to Business B's sections and categories**; a section cannot be moved to another business; attendant can view but not create, rename or archive; manager can create; a member without catalogue permission sees nothing.
 
