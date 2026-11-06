@@ -36,6 +36,7 @@ Set up the application foundation (no business features): Next.js, TypeScript, T
 | `npm run build` | Pass — 15 routes prerendered, proxy compiled |
 | Secret scan of browser bundles for the service-role key | None found |
 | Standalone server (what Docker runs) + browser checks, desktop 1366 px and phone 360 px | **13 / 13 passed**: redirect `/`→`/dashboard`; menu shows pilot modules and hides Expenses/Accounting; 12 placeholder pages load; active menu item marked; desktop sidebar collapses; unknown page returns 404; no horizontal overflow at 360 px; whole phone menu reachable; phone menu closes after navigating; menu and theme buttons 44×44 px; dark theme; no browser console errors |
+| GitHub Actions CI on push to `main` (run 42193622781) | Pass — install, formatting, lint, type-check, unit tests, build |
 | Security headers | Present: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`; `X-Powered-By` removed |
 
 ### Problems found and fixed during testing
@@ -50,7 +51,6 @@ Set up the application foundation (no business features): Next.js, TypeScript, T
 - **Docker image and compose files were not built or run**: Docker is installed in my workspace but its service is not running. They follow Next.js's standalone pattern but are unverified until built on your computer or server (Stage 15 at the latest).
 - **Supabase connection not exercised**: there is no database yet (Stage 3). The clients compile and the app runs without Supabase configured.
 - **Real devices not tested**: checks used a desktop Chrome browser at desktop and phone sizes. Real Android/iPhone testing belongs to Stage 14.
-- **CI workflow not run on GitHub**: no repository connected yet.
 - The deployment guide's Supabase service names (`kong`, `supavisor`) must be checked against the version you download.
 - `npm audit` reports advisories in development dependencies; to be reviewed in Stage 15.
 
