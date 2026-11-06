@@ -1,0 +1,14 @@
+# Place next to the official Supabase docker-compose.yml (see deploy/README.md).
+# Docker-published ports bypass most host firewalls (e.g. ufw), so bind every
+# Supabase port to localhost only. Public traffic arrives through Caddy.
+# Service names match the official stack at the time of writing — check them
+# against the version you download (`docker compose config --services`).
+services:
+  kong:
+    ports: !override
+      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:8443:8443"
+  supavisor:
+    ports: !override
+      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:6543:6543"

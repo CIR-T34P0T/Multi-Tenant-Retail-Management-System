@@ -1,0 +1,26 @@
+# Automatic HTTPS certificates for both domains.
+{
+	email {$ACME_EMAIL}
+}
+
+# The web app.
+{$APP_DOMAIN} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+	reverse_proxy app:3000
+}
+
+# Supabase API. Only the public API paths are exposed;
+# Studio (the database admin UI) stays private — reach it through an SSH tunnel.
+{$API_DOMAIN} {
+	encode zstd gzip
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+	@supabase path /auth/v1/* /rest/v1/* /storage/v1/* /realtime/v1/*
+	handle @supabase {
+		reverse_proxy host.docker.internal:8000
+	}
+	handle {
+		respond "Not found" 404
+	}
+}
