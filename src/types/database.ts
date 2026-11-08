@@ -388,6 +388,202 @@ export type Database = {
           },
         ];
       };
+      product_units: {
+        Row: {
+          business_id: string;
+          created_at: string;
+          factor: number;
+          id: string;
+          is_base: boolean;
+          product_id: string;
+          status: Database["public"]["Enums"]["record_status"];
+          unit_id: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          business_id: string;
+          created_at?: string;
+          factor: number;
+          id?: string;
+          is_base?: boolean;
+          product_id: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          unit_id: string;
+          updated_at?: string;
+        };
+        Update: {
+          business_id?: string;
+          created_at?: string;
+          factor?: number;
+          id?: string;
+          is_base?: boolean;
+          product_id?: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          unit_id?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_units_business_id_product_id_fkey";
+            columns: ["business_id", "product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "product_units_business_id_unit_id_fkey";
+            columns: ["business_id", "unit_id"];
+            isOneToOne: false;
+            referencedRelation: "units";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
+      product_variants: {
+        Row: {
+          archived_at: string | null;
+          archived_by: string | null;
+          barcode: string | null;
+          business_id: string;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          min_stock_level: number;
+          option_values: string[];
+          product_id: string;
+          sku: string;
+          status: Database["public"]["Enums"]["record_status"];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          barcode?: string | null;
+          business_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          min_stock_level?: number;
+          option_values?: string[];
+          product_id: string;
+          sku: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          barcode?: string | null;
+          business_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          min_stock_level?: number;
+          option_values?: string[];
+          product_id?: string;
+          sku?: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "product_variants_business_id_product_id_fkey";
+            columns: ["business_id", "product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
+      products: {
+        Row: {
+          archived_at: string | null;
+          archived_by: string | null;
+          base_unit_id: string;
+          brand: string;
+          business_id: string;
+          category_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          description: string;
+          id: string;
+          image_path: string | null;
+          name: string;
+          option_names: string[];
+          section_id: string;
+          status: Database["public"]["Enums"]["record_status"];
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          base_unit_id: string;
+          brand?: string;
+          business_id: string;
+          category_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          image_path?: string | null;
+          name: string;
+          option_names?: string[];
+          section_id: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Update: {
+          archived_at?: string | null;
+          archived_by?: string | null;
+          base_unit_id?: string;
+          brand?: string;
+          business_id?: string;
+          category_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          description?: string;
+          id?: string;
+          image_path?: string | null;
+          name?: string;
+          option_names?: string[];
+          section_id?: string;
+          status?: Database["public"]["Enums"]["record_status"];
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "products_business_id_base_unit_id_fkey";
+            columns: ["business_id", "base_unit_id"];
+            isOneToOne: false;
+            referencedRelation: "units";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "products_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "products_business_id_section_id_category_id_fkey";
+            columns: ["business_id", "section_id", "category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["business_id", "section_id", "id"];
+          },
+          {
+            foreignKeyName: "products_business_id_section_id_fkey";
+            columns: ["business_id", "section_id"];
+            isOneToOne: false;
+            referencedRelation: "sections";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -607,11 +803,154 @@ export type Database = {
         ];
       };
     };
+    units: {
+      Row: {
+        allows_decimal: boolean;
+        archived_at: string | null;
+        archived_by: string | null;
+        business_id: string;
+        code: string;
+        created_at: string;
+        created_by: string | null;
+        id: string;
+        kind: string;
+        name: string;
+        status: Database["public"]["Enums"]["record_status"];
+        updated_at: string;
+      };
+      ComputedFields: never;
+      Insert: {
+        allows_decimal?: boolean;
+        archived_at?: string | null;
+        archived_by?: string | null;
+        business_id: string;
+        code: string;
+        created_at?: string;
+        created_by?: string | null;
+        id?: string;
+        kind?: string;
+        name: string;
+        status?: Database["public"]["Enums"]["record_status"];
+        updated_at?: string;
+      };
+      Update: {
+        allows_decimal?: boolean;
+        archived_at?: string | null;
+        archived_by?: string | null;
+        business_id?: string;
+        code?: string;
+        created_at?: string;
+        created_by?: string | null;
+        id?: string;
+        kind?: string;
+        name?: string;
+        status?: Database["public"]["Enums"]["record_status"];
+        updated_at?: string;
+      };
+      Relationships: [
+        {
+          foreignKeyName: "units_business_id_fkey";
+          columns: ["business_id"];
+          isOneToOne: false;
+          referencedRelation: "businesses";
+          referencedColumns: ["id"];
+        },
+      ];
+    };
+    variant_costs: {
+      Row: {
+        business_id: string;
+        cost: number;
+        effective_from: string;
+        effective_to: string | null;
+        id: string;
+        set_by: string | null;
+        variant_id: string;
+      };
+      ComputedFields: never;
+      Insert: {
+        business_id: string;
+        cost: number;
+        effective_from?: string;
+        effective_to?: string | null;
+        id?: string;
+        set_by?: string | null;
+        variant_id: string;
+      };
+      Update: {
+        business_id?: string;
+        cost?: number;
+        effective_from?: string;
+        effective_to?: string | null;
+        id?: string;
+        set_by?: string | null;
+        variant_id?: string;
+      };
+      Relationships: [
+        {
+          foreignKeyName: "variant_costs_business_id_variant_id_fkey";
+          columns: ["business_id", "variant_id"];
+          isOneToOne: false;
+          referencedRelation: "product_variants";
+          referencedColumns: ["business_id", "id"];
+        },
+      ];
+    };
+    variant_prices: {
+      Row: {
+        business_id: string;
+        effective_from: string;
+        effective_to: string | null;
+        id: string;
+        price: number;
+        set_by: string | null;
+        unit_id: string;
+        variant_id: string;
+      };
+      ComputedFields: never;
+      Insert: {
+        business_id: string;
+        effective_from?: string;
+        effective_to?: string | null;
+        id?: string;
+        price: number;
+        set_by?: string | null;
+        unit_id: string;
+        variant_id: string;
+      };
+      Update: {
+        business_id?: string;
+        effective_from?: string;
+        effective_to?: string | null;
+        id?: string;
+        price?: number;
+        set_by?: string | null;
+        unit_id?: string;
+        variant_id?: string;
+      };
+      Relationships: [
+        {
+          foreignKeyName: "variant_prices_business_id_unit_id_fkey";
+          columns: ["business_id", "unit_id"];
+          isOneToOne: false;
+          referencedRelation: "units";
+          referencedColumns: ["business_id", "id"];
+        },
+        {
+          foreignKeyName: "variant_prices_business_id_variant_id_fkey";
+          columns: ["business_id", "variant_id"];
+          isOneToOne: false;
+          referencedRelation: "product_variants";
+          referencedColumns: ["business_id", "id"];
+        },
+      ];
+    };
     Views: {
       [_ in never]: never;
     };
     Functions: {
       accept_invitation: { Args: { p_member: string }; Returns: string };
+      add_product_variant: { Args: { p_product: string; p_variant: Json }; Returns: string };
       business_member_directory: {
         Args: { p_business: string };
         Returns: {
@@ -639,6 +978,7 @@ export type Database = {
         };
         Returns: string;
       };
+      create_product: { Args: { p_business: string; p_product: Json }; Returns: string };
       current_user_permissions: { Args: { p_business: string }; Returns: string[] };
       decline_invitation: { Args: { p_member: string }; Returns: undefined };
       invite_member: {
@@ -659,6 +999,11 @@ export type Database = {
         Args: { p_business: string; p_enabled: boolean; p_module: string };
         Returns: undefined;
       };
+    };
+    set_variant_cost: { Args: { p_cost: number; p_variant: string }; Returns: undefined };
+    set_variant_price: {
+      Args: { p_price: number; p_unit: string; p_variant: string };
+      Returns: undefined;
     };
     Enums: {
       member_status: "invited" | "active" | "suspended";
