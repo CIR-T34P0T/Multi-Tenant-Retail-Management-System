@@ -144,7 +144,7 @@ export function VariantsCard({
                           key={u.unitId}
                           className="flex items-center justify-between gap-2 sm:justify-start"
                         >
-                          <dt className="text-muted-foreground">
+                          <dt className="text-muted-foreground whitespace-nowrap">
                             Price per {u.name.toLowerCase()}
                           </dt>
                           <dd className="flex items-center gap-2 font-medium tabular-nums">
@@ -168,7 +168,9 @@ export function VariantsCard({
                   : null}
                 {canSeeCost ? (
                   <div className="flex items-center justify-between gap-2 sm:justify-start">
-                    <dt className="text-muted-foreground">Cost per {base.name.toLowerCase()}</dt>
+                    <dt className="text-muted-foreground whitespace-nowrap">
+                      Cost per {base.name.toLowerCase()}
+                    </dt>
                     <dd className="flex items-center gap-2 font-medium tabular-nums">
                       {money(currentCost(v.id), currency)}
                       {canCost && editable && productActive ? (
@@ -187,7 +189,7 @@ export function VariantsCard({
                   </div>
                 ) : null}
                 <div className="flex items-center justify-between gap-2 sm:justify-start">
-                  <dt className="text-muted-foreground">Low-stock alert at</dt>
+                  <dt className="text-muted-foreground whitespace-nowrap">Low-stock alert at</dt>
                   <dd className="font-medium tabular-nums">{qty(v.minStock, base.code)}</dd>
                 </div>
               </dl>
