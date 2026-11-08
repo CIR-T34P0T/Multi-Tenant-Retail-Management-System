@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   formatMoney,
   formatQuantity,
+  parseDecimalInput,
   fromBaseQuantity,
   isWholeQuantity,
   lineTotal,
@@ -85,5 +86,36 @@ describe("asNumericInput", () => {
     expect(asNumericInput("12500.50")).toBe("12500.50");
     expect(() => asNumericInput("1e3")).toThrow(RangeError);
     expect(() => asNumericInput("12,5")).toThrow(RangeError);
+  });
+});
+
+describe("parseDecimalInput", () => {
+  const money = { maxDecimals: 2, label: "Price" };
+  it("accepts typed amounts with separators and the Naira sign", () => {
+    expect(parseDecimalInput("12,500", money)).toEqual({ ok: true, value: "12500" });
+    expect(parseDecimalInput(" ₦ 1 250.50 ", money)).toEqual({ ok: true, value: "1250.5" });
+  });
+  it("rejects text, negatives and too many decimals", () => {
+    expect(parseDecimalInput("abc", money).ok).toBe(false);
+    expect(parseDecimalInput("-5", money).ok).toBe(false);
+    expect(parseDecimalInput("1.005", money)).toEqual({
+      ok: false,
+      error: "Price can have at most 2 decimal places",
+    });
+    expect(parseDecimalInput("", money)).toEqual({ ok: false, error: "Enter price" });
+  });
+  it("supports whole-number-only and non-zero rules", () => {
+    const factor = { maxDecimals: 0, allowZero: false, label: "Quantity" };
+    expect(parseDecimalInput("24", factor)).toEqual({ ok: true, value: "24" });
+    expect(parseDecimalInput("2.5", factor).ok).toBe(false);
+    expect(parseDecimalInput("0", factor)).toEqual({
+      ok: false,
+      error: "Quantity must be more than zero",
+    });
+  });
+  it("enforces a maximum", () => {
+    expect(
+      parseDecimalInput("1000000000000000000", { maxDecimals: 2, max: "9999999999999999.99" }).ok,
+    ).toBe(false);
   });
 });

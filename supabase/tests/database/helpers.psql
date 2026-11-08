@@ -105,3 +105,27 @@ as $$
 $$;
 
 grant execute on all functions in schema tests to anon, authenticated;
+
+-- Stage 6: products (look-ups bypass RLS, like an attacker guessing IDs).
+create or replace function tests.unit_id(p_slug text, p_code text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select u.id from public.units u join public.businesses b on b.id = u.business_id
+  where b.slug = p_slug and u.code = p_code
+$$;
+
+create or replace function tests.product_id(p_slug text, p_name text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select p.id from public.products p join public.businesses b on b.id = p.business_id
+  where b.slug = p_slug and p.name = p_name
+$$;
+
+create or replace function tests.variant_id(p_slug text, p_sku text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select v.id from public.product_variants v join public.businesses b on b.id = v.business_id
+  where b.slug = p_slug and upper(v.sku) = upper(p_sku)
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;

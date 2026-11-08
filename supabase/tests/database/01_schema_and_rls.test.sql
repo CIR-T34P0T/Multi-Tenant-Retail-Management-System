@@ -6,8 +6,9 @@ select plan(17);
 
 select tables_are('public', array[
   'audit_logs', 'business_members', 'business_modules', 'business_settings', 'businesses',
-  'categories', 'modules', 'permissions', 'profiles', 'role_permissions',
-  'role_template_permissions', 'role_templates', 'roles', 'sections'
+  'categories', 'modules', 'permissions', 'product_units', 'product_variants', 'products',
+  'profiles', 'role_permissions', 'role_template_permissions', 'role_templates', 'roles',
+  'sections', 'units', 'variant_costs', 'variant_prices'
 ], 'The database has exactly the expected public tables');
 
 select is_empty($$

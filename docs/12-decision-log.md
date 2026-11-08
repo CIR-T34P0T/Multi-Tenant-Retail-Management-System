@@ -107,6 +107,20 @@ ADRs in doc 11 §3 are accepted as recommended, with ADR-008 changed to "no offl
 | 11 | Docs: PRD, functional, non-functional, architecture, schema, module dependencies, roles, workflows, roadmap, **testing strategy, security model**. | Testing and security spread across docs. | **Added doc 13 (Testing Strategy) and doc 14 (Security Model).** File-name mapping in README. |
 | 12 | Build in **15 stages**, each with tests and a completion report. | Phases 0–5. | **Adopted the 15-stage plan** as the implementation sequence (doc 10 §5). Stage 1 (documentation) = this pack. |
 
+## 7. Decisions taken while building
+
+### Stage 6 — Products, variants, units and prices (8 Nov 2026)
+
+| Decision | Reason |
+|---|---|
+| Options (Size, Colour…) are named per product, up to 3; variants are their combinations | Simpler than a business-wide attribute list; enough for the pilot. A shared list can be added later without breaking data. |
+| Base unit fixed after a product is created | Stock is counted in it from Stage 7. |
+| Each unit (bottle, carton) has its own owner-set price; never calculated | Owner sets prices (§1); carton prices are often discounted. |
+| Prices and costs are history tables written only by `set_variant_price` / `set_variant_cost` | Past prices stay visible and unalterable. |
+| Cost stored per base unit; readable only with `inventory.cost.view` | Attendants don't see margins. Real purchase costs arrive with Stage 10. |
+| Images in a private bucket via the server (service key, after an RLS check); 1-hour signed links | Stock photos are not public. |
+| Variant options compared ignoring capitals and spacing | "M / White" and "m / white" are the same variant. |
+
 ## 6. Next
 
 Stage 1 is complete pending your approval of v0.3. On approval I start **Stage 2 — Project initialization and foundation** (no business features yet): Next.js + TypeScript + Tailwind + shadcn/ui setup, Supabase clients, app shell, `.env.example`, lint/type-check/build passing, plus the self-hosted Docker Compose files for local and server use.

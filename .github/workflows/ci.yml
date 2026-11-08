@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # main = finished stages; stage-* = work in progress checked before merging.
+    branches: [main, "stage-*"]
   pull_request:
 
 jobs:
@@ -57,8 +58,8 @@ jobs:
           version: latest
       - name: Install
         run: npm ci
-      - name: Start Supabase (database, auth, API gateway, mail catcher)
-        run: supabase start -x studio,imgproxy,vector,logflare,realtime,storage-api,edge-runtime,postgres-meta,supavisor
+      - name: Start Supabase (database, auth, API gateway, file storage, mail catcher)
+        run: supabase start -x studio,imgproxy,vector,logflare,realtime,edge-runtime,postgres-meta,supavisor
       - name: Database types are up to date with the migrations
         run: |
           supabase gen types typescript > /tmp/generated.ts
@@ -87,6 +88,9 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: End-to-end tests
         run: npx playwright test
+        env:
+          # Product image upload tests need the file-storage service started above.
+          STORAGE_AVAILABLE: "1"
       - name: App log on failure
         if: failure()
         run: tail -200 /tmp/app.log
