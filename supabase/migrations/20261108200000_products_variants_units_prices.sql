@@ -396,7 +396,22 @@ create table public.product_variants (
 create unique index product_variants_business_sku_key on public.product_variants (business_id, upper(sku));
 create unique index product_variants_business_barcode_key on public.product_variants (business_id, barcode)
   where barcode is not null;
-create unique index product_variants_product_options_key on public.product_variants (product_id, option_values);
+-- "M / White" and "m / white" are the same variant: compare option values
+-- ignoring capitals (the values themselves are stored as typed).
+create function app.option_values_key(p_values text[])
+returns text
+language sql
+immutable
+parallel safe
+set search_path = ''
+as $$
+  select coalesce(string_agg(lower(v), chr(31) order by o), '')
+  from unnest(p_values) with ordinality as t(v, o)
+$$;
+comment on function app.option_values_key(text[]) is
+  'Case-insensitive key of a variant''s option values (used by the uniqueness rule).';
+create unique index product_variants_product_options_key
+  on public.product_variants (product_id, app.option_values_key(option_values));
 create index product_variants_business_product_idx on public.product_variants (business_id, product_id, status);
 
 create function app.validate_variant()

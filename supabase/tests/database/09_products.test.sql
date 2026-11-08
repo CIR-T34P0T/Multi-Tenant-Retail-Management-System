@@ -2,7 +2,7 @@
 -- rules, history, roles and business isolation.
 begin;
 \ir helpers.psql
-select plan(50);
+select plan(51);
 
 select tests.create_user('ann@shop-a.test');   -- owner A
 select tests.create_user('bob@shop-b.test');   -- owner B
@@ -129,6 +129,9 @@ select throws_ok(format('select public.add_product_variant(%L, %L::jsonb)', test
 select throws_ok(format('select public.add_product_variant(%L, %L::jsonb)', tests.product_id('shop-a', 'Men''s Jalab'),
   jsonb_build_object('sku', 'JAL-DUP', 'option_values', jsonb_build_array('M', 'White'))), '23505', null,
   'The same option combination cannot exist twice');
+select throws_ok(format('select public.add_product_variant(%L, %L::jsonb)', tests.product_id('shop-a', 'Men''s Jalab'),
+  jsonb_build_object('sku', 'JAL-DUP2', 'option_values', jsonb_build_array(' m ', 'WHITE'))), '23505', null,
+  'The same option combination is refused even with different capitals or spaces');
 select throws_ok(format('select public.add_product_variant(%L, %L::jsonb)', tests.product_id('shop-a', 'Men''s Jalab'),
   jsonb_build_object('sku', 'JAL-XL', 'option_values', jsonb_build_array('XL'))), '23514', null,
   'A variant needs a value for every option');

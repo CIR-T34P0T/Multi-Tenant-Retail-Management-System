@@ -91,3 +91,37 @@ export function formatQuantity(value: DecimalInput, unitSymbol?: string): string
   const text = roundQuantity(value).toFixed();
   return unitSymbol ? `${text} ${unitSymbol}` : text;
 }
+
+export type ParsedDecimal = { ok: true; value: string } | { ok: false; error: string };
+
+/**
+ * Reads a number typed by a person: "12,500", "₦ 12 500.50", "1.25".
+ * Thousands separators, spaces and currency signs are ignored. Returns the
+ * exact decimal as a string (never a JS number), or a plain-language error.
+ */
+export function parseDecimalInput(
+  text: string,
+  options: { maxDecimals: number; allowZero?: boolean; max?: string; label?: string },
+): ParsedDecimal {
+  const label = options.label ?? "Amount";
+  const cleaned = text.replace(/[\s,₦]/g, "");
+  if (cleaned === "") return { ok: false, error: `Enter ${label.toLowerCase()}` };
+  if (!/^\d+(\.\d+)?$/.test(cleaned)) return { ok: false, error: `${label} must be a number` };
+  const value = toDecimal(cleaned);
+  if (value.decimalPlaces() > options.maxDecimals) {
+    return {
+      ok: false,
+      error:
+        options.maxDecimals === 0
+          ? `${label} must be a whole number`
+          : `${label} can have at most ${options.maxDecimals} decimal places`,
+    };
+  }
+  if (value.isZero() && !(options.allowZero ?? true)) {
+    return { ok: false, error: `${label} must be more than zero` };
+  }
+  if (options.max && value.gt(toDecimal(options.max))) {
+    return { ok: false, error: `${label} is too large` };
+  }
+  return { ok: true, value: value.toFixed() };
+}
