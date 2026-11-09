@@ -26,9 +26,7 @@ test.describe("Business settings, features and profile", () => {
     await page.getByRole("button", { name: "Save preferences" }).click();
     await expect(visibleText(page, "Settings saved.")).toBeVisible();
     await page.reload();
-    await expect(
-      page.getByRole("switch", { name: /Allow stock to go below zero/ }),
-    ).toBeChecked();
+    await expect(page.getByRole("switch", { name: /Allow stock to go below zero/ })).toBeChecked();
     await expect(page.getByLabel("Text at the bottom of receipts")).toHaveValue(
       "Thank you for shopping with us!",
     );
