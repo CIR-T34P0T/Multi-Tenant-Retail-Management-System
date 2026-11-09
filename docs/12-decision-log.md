@@ -121,6 +121,22 @@ ADRs in doc 11 §3 are accepted as recommended, with ADR-008 changed to "no offl
 | Images in a private bucket via the server (service key, after an RLS check); 1-hour signed links | Stock photos are not public. |
 | Variant options compared ignoring capitals and spacing | "M / White" and "m / white" are the same variant. |
 
+### Stage 7 — Core inventory (9 Nov 2026)
+
+| Decision | Reason |
+|---|---|
+| No `location_id` on stock tables yet | One shop (§1 Q-B02). Adding branches later means one migration that gives all existing stock to the first shop. |
+| Stock tables are read-only to everyone; changes only through database functions that lock the item's balance | Every change is in the ledger with correct before/after balances, even with many people working at once. |
+| Opening stock only once per item; afterwards "Add stock" | Keeps "opening" meaningful in reports. |
+| Reason required for deductions and write-offs; optional for additions | Losses must be explained (spec: "require a reason where appropriate"). |
+| Write-off kinds: damaged, expired, missing, other | Matches the spec's damaged/expired/missing/written-off. |
+| Default permissions: owner and manager add, deduct, write off and post counts; attendant views stock and enters counts | Existing role templates (Stage 3). The owner can change them in Settings › Roles. |
+| Negative stock: refused unless the business allows it; when allowed, the person must confirm | §1 answer "not blocked but warn". New businesses start with it off; switch on in Settings › Preferences. |
+| Stock counts: one open at a time; difference = counted − system quantity *at the moment the line was counted*; uncounted items unchanged | Sales during counting are not lost; nothing is changed by accident. |
+| Archived items cannot have stock changes | Restore first; avoids hidden stock on retired items. |
+| No cost/average cost on movements yet | Costs stay on the product (Stage 6). Weighted average cost arrives with purchases (Stage 10). |
+| No approval step for large adjustments yet | `inventory.adjustment.approve` exists but is unused; can be added when needed. |
+
 ## 6. Next
 
 Stage 1 is complete pending your approval of v0.3. On approval I start **Stage 2 — Project initialization and foundation** (no business features yet): Next.js + TypeScript + Tailwind + shadcn/ui setup, Supabase clients, app shell, `.env.example`, lint/type-check/build passing, plus the self-hosted Docker Compose files for local and server use.
