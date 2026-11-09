@@ -42,6 +42,8 @@ jobs:
         run: supabase db start
       - name: Database tests (tenant isolation, permissions, modules, audit)
         run: supabase test db
+      - name: Stock concurrency test (20 simultaneous deductions)
+        run: scripts/db/concurrency-test.sh postgresql://postgres:postgres@127.0.0.1:54322/postgres
 
   e2e:
     # Full journey tests: real browser + real Supabase (Auth, API, database, mail catcher).
