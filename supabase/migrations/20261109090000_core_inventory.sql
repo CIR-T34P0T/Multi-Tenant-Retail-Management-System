@@ -348,7 +348,7 @@ begin
     case when p_type in ('opening', 'stock_in') then v_base else -v_base end,
     p_unit, p_quantity, v_factor, p_reason, null, coalesce(p_confirm_negative, false));
 
-  return jsonb_build_object('movement_id', v_row.id, 'balance_after', v_row.balance_after);
+  return jsonb_build_object('movement_id', v_row.id, 'balance_after', trim_scale(v_row.balance_after)::text);
 end;
 $$;
 

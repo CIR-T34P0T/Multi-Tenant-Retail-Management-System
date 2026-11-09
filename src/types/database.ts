@@ -995,7 +995,7 @@ export type Database = {
           movement_type: Database["public"]["Enums"]["stock_movement_type"];
           quantity: number;
           reason?: string | null;
-          seq?: number;
+          seq?: never;
           source_id?: string | null;
           source_type?: string | null;
           stock_count_id?: string | null;
@@ -1014,7 +1014,7 @@ export type Database = {
           movement_type?: Database["public"]["Enums"]["stock_movement_type"];
           quantity?: number;
           reason?: string | null;
-          seq?: number;
+          seq?: never;
           source_id?: string | null;
           source_type?: string | null;
           stock_count_id?: string | null;
@@ -1330,7 +1330,12 @@ export type Database = {
       };
       stock_summary: {
         Args: { p_business: string };
-        Returns: { items: number; low: number; negative: number; out_of_stock: number }[];
+        Returns: {
+          items: number;
+          low: number;
+          negative: number;
+          out_of_stock: number;
+        }[];
       };
     };
     Enums: {

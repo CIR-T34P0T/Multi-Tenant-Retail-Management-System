@@ -3,6 +3,8 @@ export type ActionResult = {
   ok: boolean;
   message?: string;
   fieldErrors?: Record<string, string[] | undefined>;
+  /** The server needs the person to confirm a warning before going ahead. */
+  confirm?: string;
 };
 
 export const initialActionResult: ActionResult = { ok: false };
