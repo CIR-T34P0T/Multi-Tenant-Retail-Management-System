@@ -61,8 +61,8 @@ export function PreferencesForm({
           <h2 className="font-semibold">Stock</h2>
           <Toggle
             name="allowNegativeStock"
-            label="Allow selling more than recorded stock"
-            hint="The sale goes through with a warning, and the item appears on the negative-stock report."
+            label="Allow stock to go below zero"
+            hint="Sales and deductions can still go through after a warning; the item then shows as below zero until stock is corrected."
             defaultChecked={prefs.allow_negative_stock}
           />
           <Toggle

@@ -129,3 +129,28 @@ as $$
 $$;
 
 grant execute on all functions in schema tests to anon, authenticated;
+
+-- Stage 7: stock counts (look-ups bypass RLS, like an attacker guessing IDs).
+create or replace function tests.latest_count_id(p_slug text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select c.id from public.stock_counts c join public.businesses b on b.id = c.business_id
+  where b.slug = p_slug order by c.number desc limit 1
+$$;
+
+create or replace function tests.count_line_id(p_count uuid, p_sku text)
+returns uuid language sql stable security definer set search_path = ''
+as $$
+  select l.id from public.stock_count_lines l
+  join public.product_variants v on v.id = l.variant_id
+  where l.count_id = p_count and upper(v.sku) = upper(p_sku)
+$$;
+
+create or replace function tests.on_hand(p_slug text, p_sku text)
+returns numeric language sql stable security definer set search_path = ''
+as $$
+  select l.on_hand from public.stock_levels l
+  where l.variant_id = tests.variant_id(p_slug, p_sku)
+$$;
+
+grant execute on all functions in schema tests to anon, authenticated;

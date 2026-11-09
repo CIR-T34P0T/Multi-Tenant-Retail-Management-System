@@ -27,7 +27,9 @@ export function useFormAction(
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     formRef.current = event.currentTarget;
-    const data = new FormData(event.currentTarget);
+    // Include the button that was pressed (e.g. "Record anyway"), like a normal form post.
+    const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLElement | null;
+    const data = new FormData(event.currentTarget, submitter);
     startTransition(() => dispatch(data));
   }
   return [state, onSubmit, pending] as const;

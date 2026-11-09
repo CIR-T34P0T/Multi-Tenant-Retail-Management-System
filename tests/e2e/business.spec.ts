@@ -21,14 +21,12 @@ test.describe("Business settings, features and profile", () => {
 
   test("owner saves preferences", async ({ page }) => {
     await page.goto("/settings/preferences");
-    await page.getByRole("switch", { name: /Allow selling more than recorded stock/ }).click();
+    await page.getByRole("switch", { name: /Allow stock to go below zero/ }).click();
     await page.getByLabel("Text at the bottom of receipts").fill("Thank you for shopping with us!");
     await page.getByRole("button", { name: "Save preferences" }).click();
     await expect(visibleText(page, "Settings saved.")).toBeVisible();
     await page.reload();
-    await expect(
-      page.getByRole("switch", { name: /Allow selling more than recorded stock/ }),
-    ).toBeChecked();
+    await expect(page.getByRole("switch", { name: /Allow stock to go below zero/ })).toBeChecked();
     await expect(page.getByLabel("Text at the bottom of receipts")).toHaveValue(
       "Thank you for shopping with us!",
     );

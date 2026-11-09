@@ -29,3 +29,6 @@ done
 
 echo "--- running database tests"
 pg_prove -h "$WORK" -p "$PORT" -U postgres -d rbms_test --ext .sql -r "$ROOT/supabase/tests/database"
+
+echo "--- running the stock concurrency test"
+"$ROOT/scripts/db/concurrency-test.sh" -h "$WORK" -p "$PORT" -U postgres -d rbms_test

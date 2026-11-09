@@ -802,6 +802,248 @@ export type Database = {
           },
         ];
       };
+      stock_count_lines: {
+        Row: {
+          business_id: string;
+          count_id: string;
+          counted_at: string | null;
+          counted_by: string | null;
+          counted_quantity: number | null;
+          id: string;
+          system_quantity: number | null;
+          variant_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          business_id: string;
+          count_id: string;
+          counted_at?: string | null;
+          counted_by?: string | null;
+          counted_quantity?: number | null;
+          id?: string;
+          system_quantity?: number | null;
+          variant_id: string;
+        };
+        Update: {
+          business_id?: string;
+          count_id?: string;
+          counted_at?: string | null;
+          counted_by?: string | null;
+          counted_quantity?: number | null;
+          id?: string;
+          system_quantity?: number | null;
+          variant_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stock_count_lines_business_id_count_id_fkey";
+            columns: ["business_id", "count_id"];
+            isOneToOne: false;
+            referencedRelation: "stock_counts";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "stock_count_lines_business_id_variant_id_fkey";
+            columns: ["business_id", "variant_id"];
+            isOneToOne: false;
+            referencedRelation: "product_variants";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
+      stock_counts: {
+        Row: {
+          business_id: string;
+          cancelled_at: string | null;
+          cancelled_by: string | null;
+          category_id: string | null;
+          created_at: string;
+          created_by: string | null;
+          id: string;
+          note: string | null;
+          number: number;
+          posted_at: string | null;
+          posted_by: string | null;
+          section_id: string | null;
+          status: string;
+          updated_at: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          business_id: string;
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
+          category_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          note?: string | null;
+          number: number;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          section_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          business_id?: string;
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
+          category_id?: string | null;
+          created_at?: string;
+          created_by?: string | null;
+          id?: string;
+          note?: string | null;
+          number?: number;
+          posted_at?: string | null;
+          posted_by?: string | null;
+          section_id?: string | null;
+          status?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stock_counts_business_id_category_id_fkey";
+            columns: ["business_id", "category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "stock_counts_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "stock_counts_business_id_section_id_fkey";
+            columns: ["business_id", "section_id"];
+            isOneToOne: false;
+            referencedRelation: "sections";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
+      stock_levels: {
+        Row: {
+          business_id: string;
+          last_movement_at: string | null;
+          movement_count: number;
+          on_hand: number;
+          updated_at: string;
+          variant_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          business_id: string;
+          last_movement_at?: string | null;
+          movement_count?: number;
+          on_hand?: number;
+          updated_at?: string;
+          variant_id: string;
+        };
+        Update: {
+          business_id?: string;
+          last_movement_at?: string | null;
+          movement_count?: number;
+          on_hand?: number;
+          updated_at?: string;
+          variant_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stock_levels_business_id_variant_id_fkey";
+            columns: ["business_id", "variant_id"];
+            isOneToOne: true;
+            referencedRelation: "product_variants";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
+      stock_movements: {
+        Row: {
+          balance_after: number;
+          balance_before: number;
+          business_id: string;
+          created_at: string;
+          created_by: string | null;
+          entered_quantity: number;
+          entered_unit_id: string;
+          factor: number;
+          id: string;
+          movement_type: Database["public"]["Enums"]["stock_movement_type"];
+          quantity: number;
+          reason: string | null;
+          seq: number;
+          source_id: string | null;
+          source_type: string | null;
+          stock_count_id: string | null;
+          variant_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          balance_after: number;
+          balance_before: number;
+          business_id: string;
+          created_at?: string;
+          created_by?: string | null;
+          entered_quantity: number;
+          entered_unit_id: string;
+          factor: number;
+          id?: string;
+          movement_type: Database["public"]["Enums"]["stock_movement_type"];
+          quantity: number;
+          reason?: string | null;
+          seq?: never;
+          source_id?: string | null;
+          source_type?: string | null;
+          stock_count_id?: string | null;
+          variant_id: string;
+        };
+        Update: {
+          balance_after?: number;
+          balance_before?: number;
+          business_id?: string;
+          created_at?: string;
+          created_by?: string | null;
+          entered_quantity?: number;
+          entered_unit_id?: string;
+          factor?: number;
+          id?: string;
+          movement_type?: Database["public"]["Enums"]["stock_movement_type"];
+          quantity?: number;
+          reason?: string | null;
+          seq?: never;
+          source_id?: string | null;
+          source_type?: string | null;
+          stock_count_id?: string | null;
+          variant_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "stock_movements_business_id_entered_unit_id_fkey";
+            columns: ["business_id", "entered_unit_id"];
+            isOneToOne: false;
+            referencedRelation: "units";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "stock_movements_business_id_stock_count_id_fkey";
+            columns: ["business_id", "stock_count_id"];
+            isOneToOne: false;
+            referencedRelation: "stock_counts";
+            referencedColumns: ["business_id", "id"];
+          },
+          {
+            foreignKeyName: "stock_movements_business_id_variant_id_fkey";
+            columns: ["business_id", "variant_id"];
+            isOneToOne: false;
+            referencedRelation: "product_variants";
+            referencedColumns: ["business_id", "id"];
+          },
+        ];
+      };
       units: {
         Row: {
           allows_decimal: boolean;
@@ -968,6 +1210,8 @@ export type Database = {
         }[];
       };
       cancel_invitation: { Args: { p_member: string }; Returns: undefined };
+      cancel_stock_count: { Args: { p_count: string }; Returns: undefined };
+      check_stock_records: { Args: { p_business: string }; Returns: Json };
       create_business: {
         Args: {
           p_country?: string;
@@ -995,6 +1239,19 @@ export type Database = {
           role_name: string;
         }[];
       };
+      post_stock_count: { Args: { p_count: string }; Returns: Json };
+      record_count_line: { Args: { p_counted: number; p_line: string }; Returns: undefined };
+      record_stock_movement: {
+        Args: {
+          p_confirm_negative?: boolean;
+          p_quantity: number;
+          p_reason?: string;
+          p_type: Database["public"]["Enums"]["stock_movement_type"];
+          p_unit: string;
+          p_variant: string;
+        };
+        Returns: Json;
+      };
       set_module_enabled: {
         Args: { p_business: string; p_enabled: boolean; p_module: string };
         Returns: undefined;
@@ -1004,10 +1261,95 @@ export type Database = {
         Args: { p_price: number; p_unit: string; p_variant: string };
         Returns: undefined;
       };
+      start_stock_count: {
+        Args: { p_business: string; p_category?: string; p_note?: string; p_section?: string };
+        Returns: string;
+      };
+      stock_movement_history: {
+        Args: {
+          p_business: string;
+          p_count?: string;
+          p_limit?: number;
+          p_offset?: number;
+          p_types?: Database["public"]["Enums"]["stock_movement_type"][];
+          p_variant?: string;
+        };
+        Returns: {
+          balance_after: number;
+          balance_before: number;
+          base_unit_code: string;
+          created_at: string;
+          created_by_name: string;
+          entered_quantity: number;
+          entered_unit_code: string;
+          id: string;
+          movement_type: Database["public"]["Enums"]["stock_movement_type"];
+          option_values: string[];
+          product_id: string;
+          product_name: string;
+          quantity: number;
+          reason: string;
+          seq: number;
+          sku: string;
+          stock_count_id: string;
+          total_count: number;
+          variant_id: string;
+        }[];
+      };
+      stock_overview: {
+        Args: {
+          p_archived?: boolean;
+          p_business: string;
+          p_category?: string;
+          p_limit?: number;
+          p_offset?: number;
+          p_q?: string;
+          p_section?: string;
+          p_status?: string;
+        };
+        Returns: {
+          barcode: string;
+          base_allows_decimal: boolean;
+          base_unit_code: string;
+          brand: string;
+          category_name: string;
+          is_active: boolean;
+          last_movement_at: string;
+          min_stock_level: number;
+          on_hand: number;
+          option_names: string[];
+          option_values: string[];
+          product_id: string;
+          product_name: string;
+          section_name: string;
+          sku: string;
+          stock_status: string;
+          total_count: number;
+          variant_id: string;
+        }[];
+      };
+      stock_summary: {
+        Args: { p_business: string };
+        Returns: {
+          items: number;
+          low: number;
+          negative: number;
+          out_of_stock: number;
+        }[];
+      };
     };
     Enums: {
       member_status: "invited" | "active" | "suspended";
       record_status: "active" | "inactive" | "archived";
+      stock_movement_type:
+        | "opening"
+        | "stock_in"
+        | "stock_out"
+        | "damaged"
+        | "expired"
+        | "missing"
+        | "written_off"
+        | "count";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1124,6 +1466,16 @@ export const Constants = {
     Enums: {
       member_status: ["invited", "active", "suspended"],
       record_status: ["active", "inactive", "archived"],
+      stock_movement_type: [
+        "opening",
+        "stock_in",
+        "stock_out",
+        "damaged",
+        "expired",
+        "missing",
+        "written_off",
+        "count",
+      ],
     },
   },
 } as const;
